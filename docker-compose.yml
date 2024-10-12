@@ -3,8 +3,10 @@ services:
     image: itzg/minecraft-server
     tty: true
     stdin_open: true
+    network_mode: "host"
     ports:
       - "25565:25565"
+      - "24454:24454/udp"
     environment:
       EULA: "TRUE"
       ONLINE_MODE: "FALSE"
@@ -14,9 +16,17 @@ services:
       TYPE: FORGE
       FORGE_VERSION: "47.3.0"
       WORLD: "/worlds/world"
-      FORCE_WORLD_COPY: "true"
+      FORCE_WORLD_COPY: "false"
+      ICON: "/extras/server-icon.png"
+      CF_API_KEY: ${CF_API_KEY}
+      CURSEFORGE_FILES: "@/extras/cf-mods.txt"
+      RCON_ENABLE: "true"
+      RCON_PASSWORD: "4e0eb55bdfcd63cfd7f8f770"
+      RCON_CMDS_LAST_DISCONNECT: /save-all
     volumes:
+      - ./scripts:/scripts  # Mount the scripts directory
       - ./world:/worlds/world
       - ./data:/data
-      - ./data/mc-mods/:/mods
-   # entrypoint: ["./init.sh"]
+      # - ./data/mc-mods/:/mods
+      - ./backups:/backups
+      - ./extras:/extras
